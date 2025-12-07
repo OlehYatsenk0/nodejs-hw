@@ -1,35 +1,46 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
+import express from "express";
+import dotenv from "dotenv";
+import { errors as celebrateErrors } from "celebrate";
 
-import { connectMongoDB } from './db/connectMongoDB.js';
-import notesRoutes from './routes/notesRoutes.js';
-import { logger } from './middleware/logger.js';
-import { notFoundHandler } from './middleware/notFoundHandler.js';
-import { errorHandler } from './middleware/errorHandler.js';
+import { connectMongoDB } from "./db/connectMongoDB.js";
+import notesRouter from "./routes/notesRoutes.js";
+import { logger } from "./middleware/logger.js";
+import { notFoundHandler } from "./middleware/notFoundHandler.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// Підключення до MongoDB перед запуском сервера
-await connectMongoDB();
-
-// Middleware
-app.use(cors());
 app.use(express.json());
 app.use(logger);
 
-// Маршрути нотаток
-app.use(notesRoutes);
+// маршрути
+app.use("/notes", notesRouter);
 
-// 404
+// 404 – неіснуючі маршрути
 app.use(notFoundHandler);
 
-// Error handler (останній у стеку)
+// помилки валідації celebrate
+app.use(celebrateErrors());
+
+// загальний обробник помилок
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+const { PORT = 3000, MONGO_URL } = process.env;
+
+const start = async () => {
+  try {
+    await connectMongoDB(MONGO_URL);
+    console.log("MongoDB connected");
+
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Error starting server:", error.message);
+    process.exit(1);
+  }
+};
+
+start();
