@@ -1,4 +1,8 @@
 import { Router } from "express";
+import { celebrate } from "celebrate";
+
+import { authenticate } from "../middleware/authenticate.js";
+
 import {
   getAllNotes,
   getNoteById,
@@ -16,14 +20,13 @@ import {
 
 const router = Router();
 
-router.get("/", getAllNotesSchema, getAllNotes);
+// 🔒 ВСІ /notes тільки для авторизованих
+router.use(authenticate);
 
-router.get("/:noteId", noteIdSchema, getNoteById);
-
-router.post("/", createNoteSchema, createNote);
-
-router.patch("/:noteId", updateNoteSchema, updateNote);
-
-router.delete("/:noteId", noteIdSchema, deleteNote);
+router.get("/notes", celebrate(getAllNotesSchema), getAllNotes);
+router.get("/notes/:noteId", celebrate(noteIdSchema), getNoteById);
+router.post("/notes", celebrate(createNoteSchema), createNote);
+router.patch("/notes/:noteId", celebrate(updateNoteSchema), updateNote);
+router.delete("/notes/:noteId", celebrate(noteIdSchema), deleteNote);
 
 export default router;

@@ -1,9 +1,14 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 import { errors as celebrateErrors } from "celebrate";
 
 import { connectMongoDB } from "./db/connectMongoDB.js";
+
+import authRouter from "./routes/authRoutes.js";
 import notesRouter from "./routes/notesRoutes.js";
+
 import { logger } from "./middleware/logger.js";
 import { notFoundHandler } from "./middleware/notFoundHandler.js";
 import { errorHandler } from "./middleware/errorHandler.js";
@@ -12,19 +17,29 @@ dotenv.config();
 
 const app = express();
 
+// потрібно для cookie (sameSite none) + запитів з фронту
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
+
 app.use(express.json());
+app.use(cookieParser());
 app.use(logger);
 
 // маршрути
-app.use("/notes", notesRouter);
+app.use(authRouter);
+app.use(notesRouter);
 
-// 404 – неіснуючі маршрути
+// 404
 app.use(notFoundHandler);
 
-// помилки валідації celebrate
+// celebrate errors
 app.use(celebrateErrors());
 
-// загальний обробник помилок
+// загальні помилки
 app.use(errorHandler);
 
 const { PORT = 3000, MONGO_URL } = process.env;
