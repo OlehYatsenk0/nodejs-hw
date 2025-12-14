@@ -18,13 +18,13 @@ const noteSchema = new Schema(
     tag: {
       type: String,
       enum: TAGS,
+      default: "Todo", // ✅ ДОДАНО
     },
   },
   {
     timestamps: true,
   }
 );
-
 
 noteSchema.index({ title: "text", content: "text" });
 
