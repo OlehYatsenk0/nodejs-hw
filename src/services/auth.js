@@ -2,9 +2,11 @@ import crypto from "crypto";
 import { Session } from "../models/session.js";
 import { FIFTEEN_MINUTES, ONE_DAY } from "../constants/time.js";
 
+const generateToken = (bytes = 32) => crypto.randomBytes(bytes).toString("hex");
+
 export const createSession = async (userId) => {
-  const accessToken = crypto.randomUUID();
-  const refreshToken = crypto.randomUUID();
+  const accessToken = generateToken(32);
+  const refreshToken = generateToken(32);
 
   const now = Date.now();
 
