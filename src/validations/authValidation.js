@@ -1,5 +1,4 @@
-import Joi from "joi";
-import { Segments } from "celebrate";
+import { Joi, Segments } from "celebrate";
 
 // ===================== auth =====================
 export const registerUserSchema = {
