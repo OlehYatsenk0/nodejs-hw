@@ -8,6 +8,7 @@ import { connectMongoDB } from "./db/connectMongoDB.js";
 
 import authRouter from "./routes/authRoutes.js";
 import notesRouter from "./routes/notesRoutes.js";
+import userRouter from "./routes/userRoutes.js";
 
 import { logger } from "./middleware/logger.js";
 import { notFoundHandler } from "./middleware/notFoundHandler.js";
@@ -32,6 +33,7 @@ app.use(logger);
 // маршрути
 app.use(authRouter);
 app.use(notesRouter);
+app.use(userRouter);
 
 // 404
 app.use(notFoundHandler);
