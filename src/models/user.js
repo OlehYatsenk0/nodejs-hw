@@ -7,6 +7,11 @@ const userSchema = new Schema(
     username: { type: String, trim: true },
     email: { type: String, required: true, unique: true, trim: true },
     password: { type: String, required: true, minlength: 8 },
+
+    avatar: {
+      type: String,
+      default: "https://ac.goit.global/fullstack/react/default-avatar.jpg",
+    },
   },
   { timestamps: true }
 );
@@ -19,9 +24,8 @@ userSchema.methods.toJSON = function () {
 };
 
 // якщо username не передали — ставимо email
-userSchema.pre("save", function (next) {
+userSchema.pre("save", function () {
   if (!this.username) this.username = this.email;
-  next();
 });
 
 export const User = model("User", userSchema);

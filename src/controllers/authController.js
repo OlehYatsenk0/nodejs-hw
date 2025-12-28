@@ -8,7 +8,7 @@ import createHttpError from "http-errors";
 import { User } from "../models/user.js";
 import { Session } from "../models/session.js";
 import { createSession, setSessionCookies } from "../services/auth.js";
-import { sendMail } from "../utils/sendMail.js";
+import { sendEmail } from "../utils/sendMail.js";
 
 const { JWT_SECRET, FRONTEND_DOMAIN } = process.env;
 
@@ -123,7 +123,7 @@ export const requestResetEmail = async (req, res, next) => {
 
     const user = await User.findOne({ email });
 
-    // ❗ завжди 200
+    // ❗ завжди повертаємо 200
     if (!user) {
       return res.status(200).json({
         message: "Password reset email sent successfully",
@@ -152,30 +152,32 @@ export const requestResetEmail = async (req, res, next) => {
       resetLink,
     });
 
-    await sendMail({
-      to: email,
-      subject: "Password reset",
-      html,
-    });
+    try {
+      await sendEmail({
+        to: email,
+        subject: "Password reset",
+        html,
+      });
+    } catch (err) {
+      throw createHttpError(
+        500,
+        "Failed to send the email, please try again later."
+      );
+    }
 
     res.status(200).json({
       message: "Password reset email sent successfully",
     });
   } catch (error) {
-    next(
-      createHttpError(
-        500,
-        "Failed to send the email, please try again later."
-      )
-    );
+    next(error);
   }
 };
+
 export const resetPassword = async (req, res, next) => {
   try {
     const { token, password } = req.body;
 
     let payload;
-
     try {
       payload = jwt.verify(token, JWT_SECRET);
     } catch (error) {

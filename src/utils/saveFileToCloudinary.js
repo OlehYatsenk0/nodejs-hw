@@ -1,11 +1,8 @@
 import { v2 as cloudinary } from "cloudinary";
 import { Readable } from "stream";
 
-const {
-  CLOUDINARY_CLOUD_NAME,
-  CLOUDINARY_API_KEY,
-  CLOUDINARY_API_SECRET,
-} = process.env;
+const { CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } =
+  process.env;
 
 cloudinary.config({
   cloud_name: CLOUDINARY_CLOUD_NAME,
@@ -19,12 +16,11 @@ export const saveFileToCloudinary = (buffer) => {
       {
         folder: "avatars",
         resource_type: "image",
+        overwrite: true,
+        unique_filename: true,
       },
       (error, result) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+        if (error) return reject(error);
         resolve(result);
       }
     );
