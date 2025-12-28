@@ -17,7 +17,7 @@ dotenv.config();
 
 const app = express();
 
-// потрібно для cookie (sameSite none) + запитів з фронту
+// ✅ потрібно для cookies (sameSite: 'none')
 app.use(
   cors({
     origin: true,
@@ -29,7 +29,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(logger);
 
-// маршрути
+// ✅ маршрути
 app.use(authRouter);
 app.use(notesRouter);
 
@@ -39,7 +39,7 @@ app.use(notFoundHandler);
 // celebrate errors
 app.use(celebrateErrors());
 
-// загальні помилки
+// global error handler
 app.use(errorHandler);
 
 const { PORT = 3000, MONGO_URL } = process.env;
