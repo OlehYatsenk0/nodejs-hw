@@ -18,11 +18,8 @@ userSchema.methods.toJSON = function () {
   return obj;
 };
 
-// ✅ FIX: mongoose v7+ (прибрано next)
 userSchema.pre("save", function () {
-  if (!this.username) {
-    this.username = this.email;
-  }
+  if (!this.username) this.username = this.email;
 });
 
 export const User = model("User", userSchema);

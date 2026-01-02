@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { TAGS } from "../constants/tags.js";
 
 const { Schema, model } = mongoose;
 
@@ -8,8 +9,8 @@ const noteSchema = new Schema(
     content: { type: String, default: "", trim: true },
     tag: {
       type: String,
-      enum: ["Todo", "Work", "Personal", "Meeting"],
-      default: "Todo",
+      enum: TAGS,
+      default: TAGS[0],
     },
     userId: {
       type: Schema.Types.ObjectId,
@@ -19,5 +20,8 @@ const noteSchema = new Schema(
   },
   { timestamps: true }
 );
+
+// ✅ Text index для пошуку по назві та контенту
+noteSchema.index({ title: "text", content: "text" });
 
 export default model("Note", noteSchema);
