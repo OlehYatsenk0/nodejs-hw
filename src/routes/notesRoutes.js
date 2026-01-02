@@ -20,6 +20,7 @@ import {
 
 const router = Router();
 
+// ❗️ ОБОВʼЯЗКОВО
 router.use(authenticate);
 
 router.get("/notes", celebrate(getAllNotesSchema), getAllNotes);

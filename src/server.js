@@ -17,7 +17,7 @@ dotenv.config();
 
 const app = express();
 
-// ✅ потрібно для cookies (sameSite: 'none')
+// ✅ cookies + sameSite: 'none'
 app.use(
   cors({
     origin: true,
@@ -36,10 +36,10 @@ app.use(notesRouter);
 // 404
 app.use(notFoundHandler);
 
-// celebrate errors
+// celebrate
 app.use(celebrateErrors());
 
-// global error handler
+// errors
 app.use(errorHandler);
 
 const { PORT = 3000, MONGO_URL } = process.env;
@@ -53,7 +53,7 @@ const start = async () => {
       console.log(`Server is running on port ${PORT}`);
     });
   } catch (error) {
-    console.error("Error starting server:", error.message);
+    console.error(error.message);
     process.exit(1);
   }
 };

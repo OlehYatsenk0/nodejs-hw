@@ -21,7 +21,7 @@ const noteSchema = new Schema(
   { timestamps: true }
 );
 
-// ✅ Text index для пошуку по назві та контенту
+// ✅ text index (обовʼязково)
 noteSchema.index({ title: "text", content: "text" });
 
 export default model("Note", noteSchema);
