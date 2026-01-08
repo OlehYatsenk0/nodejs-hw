@@ -18,12 +18,15 @@ const noteSchema = new Schema(
     tag: {
       type: String,
       enum: TAGS,
-      default: "Todo", // ✅ ДОДАНО
+      default: "Todo",
+    },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 noteSchema.index({ title: "text", content: "text" });
